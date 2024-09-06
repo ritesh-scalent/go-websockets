@@ -1,0 +1,13 @@
+package http
+
+import (
+	"github.com/gin-gonic/gin"
+)
+
+func Route(router *gin.Engine) {
+
+	router.GET("/ws", Chat)
+
+}
+
+// 	router.Run(":8080")

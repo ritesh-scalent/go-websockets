@@ -1,0 +1,6 @@
+service:
+  service_name: "go-websockets"
+  http_port: 8080
+
+redis:
+  address : "127.0.0.1:6379"

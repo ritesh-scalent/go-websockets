@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Integration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #messages {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            height: 150px;
+            overflow-y: scroll;
+            background-color: #fafafa;
+            margin-bottom: 10px;
+        }
+
+        .message {
+            background-color: #f0f4f8;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        #status {
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <h1>WebSocket Client</h1>
+        <div id="status">Connecting...</div>
+        <div id="messages"></div>
+        <button id="disconnectBtn" disabled>Disconnect</button>
+    </div>
+
+    <script>
+        const messagesDiv = document.getElementById("messages");
+        const statusDiv = document.getElementById("status");
+        const disconnectBtn = document.getElementById("disconnectBtn");
+
+        let socket;
+
+        function addMessage(message) {
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message");
+            messageElement.textContent = message;
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function connectWebSocket() {
+            socket = new WebSocket("ws://localhost:8080/ws");
+
+            socket.onopen = () => {
+                statusDiv.textContent = "Connected";
+                disconnectBtn.disabled = false;
+            };
+
+            socket.onmessage = (event) => {
+                addMessage(event.data);
+            };
+
+            socket.onclose = () => {
+                statusDiv.textContent = "Disconnected";
+                disconnectBtn.disabled = true;
+            };
+
+            socket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+                statusDiv.textContent = "Error occurred";
+            };
+        }
+
+        disconnectBtn.addEventListener("click", () => {
+            socket.close();
+        });
+
+        connectWebSocket();
+    </script>
+
+</body>
+</html>
